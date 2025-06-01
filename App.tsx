@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, View } from 'react-native';
+import { SafeAreaView, View, Text } from 'react-native';
 import CreateSreen from './components/CreatePage';
 import BottomTabBar from 'components/NavigateBar';
+import Header from 'components/Header';
 
 import './global.css';
 
@@ -25,6 +26,7 @@ export default function App() {
     <SafeAreaView className="flex-1">
       <StatusBar style="auto" />
       {renderScreen()}
+      <Header balance={100.0} onInfoPress={() => {}} onMenuPress={() => {}} />
       <BottomTabBar currentTab={currentTab} onTabChange={setCurrentTab} />
     </SafeAreaView>
   );
