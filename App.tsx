@@ -25,8 +25,8 @@ export default function App() {
   return (
     <SafeAreaView className="flex-1">
       <StatusBar style="auto" />
-      {renderScreen()}
       <Header balance={100.0} onInfoPress={() => {}} onMenuPress={() => {}} />
+      {renderScreen()}
       <BottomTabBar currentTab={currentTab} onTabChange={setCurrentTab} />
     </SafeAreaView>
   );
