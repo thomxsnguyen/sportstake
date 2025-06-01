@@ -10,7 +10,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ balance, onInfoPress, onMenuPress }) => {
   return (
-    <View className="flex-row items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
+    <View className="flex-row items-center justify-between  bg-white px-4 py-3">
       <TouchableOpacity onPress={onMenuPress}>
         <Ionicons name="menu-outline" size={24} color="#000" />
       </TouchableOpacity>

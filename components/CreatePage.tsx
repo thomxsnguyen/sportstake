@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Categories from './Categories';
 
 const CreatePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
     <View className="flex-1">
@@ -17,6 +19,8 @@ const CreatePage = () => {
           />
           <Ionicons name="search" size={20} color="#666" />
         </View>
+
+        <Categories selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
       </View>
     </View>
   );
