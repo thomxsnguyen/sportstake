@@ -24,8 +24,8 @@ const categories: Category[] = [
 
 const Categories: React.FC<CategoriesProps> = ({ selectedCategory, onSelectCategory }) => {
   return (
-    <View className="mt-6">
-      <View className="mb-4 flex-row items-center justify-between px-4">
+    <View className="mt-1">
+      <View className="mb-2 flex-row items-center justify-between px-4">
         <Text className="text-lg font-semibold">Categories</Text>
         <TouchableOpacity className="flex-row items-center">
           <Text className="mr-1 text-blue-500">View all</Text>
@@ -33,23 +33,21 @@ const Categories: React.FC<CategoriesProps> = ({ selectedCategory, onSelectCateg
         </TouchableOpacity>
       </View>
 
-      <View className="px-2">
-        <View className="flex-row justify-between">
-          {categories.map((category) => (
-            <TouchableOpacity
-              key={category.id}
-              onPress={() => onSelectCategory(category.id)}
-              className={`h-14 w-14 items-center justify-center rounded-full ${
-                selectedCategory === category.id ? 'bg-blue-500' : 'bg-gray-100'
-              }`}>
-              <MaterialIcons
-                name={category.icon as any}
-                size={28}
-                color={selectedCategory === category.id ? '#fff' : '#666'}
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
+      <View className="flex-row justify-between px-4">
+        {categories.map((category) => (
+          <TouchableOpacity
+            key={category.id}
+            onPress={() => onSelectCategory(category.id)}
+            className={`h-14 w-14 items-center justify-center rounded-full ${
+              selectedCategory === category.id ? 'bg-blue-500' : 'bg-gray-100'
+            }`}>
+            <MaterialIcons
+              name={category.icon as any}
+              size={28}
+              color={selectedCategory === category.id ? '#fff' : '#666'}
+            />
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );

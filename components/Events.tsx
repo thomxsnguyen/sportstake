@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
 interface GameMatch {
   id: string;
   team1: string;
   team2: string;
-  isSelected?: boolean;
 }
 
 interface Player {
@@ -20,7 +19,7 @@ interface Player {
 }
 
 const gameMatches: GameMatch[] = [
-  { id: '1', team1: 'LAL', team2: 'GSW', isSelected: true },
+  { id: '1', team1: 'LAL', team2: 'GSW' },
   { id: '2', team1: 'DEN', team2: 'DAL' },
   { id: '3', team1: 'PHO', team2: 'MIL' },
   { id: '4', team1: 'OKC', team2: 'BKN' },
@@ -91,21 +90,60 @@ const players: Player[] = [
 ];
 
 const Events = () => {
+  const [selectedMatch, setSelectedMatch] = useState<string>('1');
+
+  const handleMatchSelect = (matchId: string) => {
+    setSelectedMatch(matchId);
+  };
+
+  const renderJersey = (player: Player) => (
+    <View className="relative h-[80px] w-[70px]">
+      {/* Main Jersey Body */}
+      <View className="absolute inset-0 rounded-lg" style={{ backgroundColor: player.jerseyColor }}>
+        {/* Neck Opening */}
+        <View
+          className="absolute left-4 right-4 top-0 h-3 bg-white opacity-20"
+          style={{ borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}
+        />
+
+        {/* Arm Holes */}
+        <View
+          className="absolute -left-1 top-3 h-10 w-3 bg-white opacity-20"
+          style={{ borderTopRightRadius: 8, borderBottomRightRadius: 8 }}
+        />
+        <View
+          className="absolute -right-1 top-3 h-10 w-3 bg-white opacity-20"
+          style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
+        />
+
+        {/* Jersey Number */}
+        <View className="absolute inset-0 items-center justify-center">
+          <Text className="text-[32px] font-bold" style={{ color: player.numberColor }}>
+            {player.number}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+
   return (
     <View className="flex-1 bg-white">
       <Text className="mb-3 px-4 text-lg font-semibold">Events</Text>
 
+      {/* Game matchups section */}
       <View className="mb-3 px-4">
         <View className="flex-row justify-between">
           {gameMatches.map((match) => (
             <TouchableOpacity
               key={match.id}
+              onPress={() => handleMatchSelect(match.id)}
               className={`mx-0.5 h-[22px] flex-1 items-center justify-center rounded-full px-2 ${
-                match.isSelected ? 'bg-black' : 'bg-gray-100'
-              }`}>
+                selectedMatch === match.id ? 'bg-black' : 'bg-gray-100'
+              }`}
+              activeOpacity={0.7}>
               <Text
                 className={`text-[8px] font-medium leading-none ${
-                  match.isSelected ? 'text-white' : 'text-black'
+                  selectedMatch === match.id ? 'text-white' : 'text-black'
                 }`}
                 numberOfLines={1}
                 adjustsFontSizeToFit>
@@ -119,23 +157,23 @@ const Events = () => {
       {/* Player Cards Grid */}
       <ScrollView className="px-4">
         <View className="flex-row flex-wrap justify-between">
-          {players.map((player) => (
-            <View key={player.id} className="mb-3 w-[31%] rounded-xl bg-gray-50 p-3">
-              <View
-                className="mx-auto mb-2 h-20 w-20"
-                style={{ backgroundColor: player.jerseyColor }}>
-                <Text
-                  className="mt-4 text-center text-2xl font-bold"
-                  style={{ color: player.numberColor }}>
-                  {player.number}
+          {players
+            .filter(
+              (player) =>
+                player.team === gameMatches.find((m) => m.id === selectedMatch)?.team1 ||
+                player.team === gameMatches.find((m) => m.id === selectedMatch)?.team2 ||
+                player.opponent === gameMatches.find((m) => m.id === selectedMatch)?.team1 ||
+                player.opponent === gameMatches.find((m) => m.id === selectedMatch)?.team2
+            )
+            .map((player) => (
+              <View key={player.id} className="mb-3 w-[31%] items-center rounded-xl bg-gray-50 p-3">
+                {renderJersey(player)}
+                <Text className="mb-1 mt-2 text-center font-semibold">{player.name}</Text>
+                <Text className="text-center text-xs text-gray-500">
+                  vs {player.opponent} {player.date}
                 </Text>
               </View>
-              <Text className="mb-1 text-center font-semibold">{player.name}</Text>
-              <Text className="text-center text-xs text-gray-500">
-                vs {player.opponent} {player.date}
-              </Text>
-            </View>
-          ))}
+            ))}
         </View>
       </ScrollView>
     </View>
