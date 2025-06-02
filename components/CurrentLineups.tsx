@@ -192,7 +192,7 @@ const GameBox = ({
 
 const CurrentLineups = () => {
   const insets = useSafeAreaInsets();
-  const { lineups, removeLineupsByGame } = useLineups();
+  const { lineups, removeLineupsByGame, sellLineupsByGame } = useLineups();
 
   // Group lineups by specific game matchup
   const groupedLineups = lineups.reduce<Record<string, GameGroup>>((groups, lineup) => {
@@ -220,7 +220,15 @@ const CurrentLineups = () => {
   const gameGroups = Object.values(groupedLineups);
 
   const handleSellGame = (gameId: string) => {
-    removeLineupsByGame(gameId);
+    const gameGroup = groupedLineups[gameId];
+    if (gameGroup) {
+      sellLineupsByGame(
+        gameId,
+        gameGroup.lineups,
+        gameGroup.wagerAmount,
+        gameGroup.totalPotentialWin
+      );
+    }
   };
 
   return (

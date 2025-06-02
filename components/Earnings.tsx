@@ -171,8 +171,8 @@ const Earnings = () => {
           ))}
         </View>
 
-        {/* Balance Breakdown - removed border-t and adjusted spacing */}
-        <View className="mt-3">
+        {/* Balance Breakdown */}
+        <View className="mt-3 border-t border-gray-200 pt-3">
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-xs text-gray-500">Cash Balance</Text>

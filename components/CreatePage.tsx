@@ -7,6 +7,12 @@ import Events from './Events';
 const CreatePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+
+  const handleCategorySelect = (id: string) => {
+    setSelectedCategory(id);
+    setShowAllCategories(false);
+  };
 
   return (
     <View className="flex-1">
@@ -25,7 +31,13 @@ const CreatePage = () => {
         </View>
 
         {/* Categories */}
-        <Categories selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
+        <Categories
+          selectedCategory={selectedCategory}
+          onSelectCategory={handleCategorySelect}
+          showAllCategories={showAllCategories}
+          onViewAllPress={() => setShowAllCategories(true)}
+          onCloseModal={() => setShowAllCategories(false)}
+        />
 
         {/* Events List */}
         <Events />

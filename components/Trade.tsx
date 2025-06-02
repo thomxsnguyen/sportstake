@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Categories from './Categories';
 import DoublesLineups from './DoublesLineups';
+import SellingLineups from './SellingLineups';
 
 const Trade = () => {
   const [activeTab, setActiveTab] = useState<'market' | 'listings'>('market');
@@ -77,18 +78,20 @@ const Trade = () => {
         </View>
       </View>
 
-      {/* Categories */}
-      <Categories
-        selectedCategory={selectedCategory}
-        onSelectCategory={handleCategorySelect}
-        showAllCategories={showAllCategories}
-        onViewAllPress={() => setShowAllCategories(true)}
-        onCloseModal={() => setShowAllCategories(false)}
-      />
+      {/* Categories - Only show for Open Market */}
+      {activeTab === 'market' && (
+        <Categories
+          selectedCategory={selectedCategory}
+          onSelectCategory={handleCategorySelect}
+          showAllCategories={showAllCategories}
+          onViewAllPress={() => setShowAllCategories(true)}
+          onCloseModal={() => setShowAllCategories(false)}
+        />
+      )}
 
-      {/* Doubles Section */}
+      {/* Content Section */}
       <View className="flex-1">
-        <DoublesLineups />
+        {activeTab === 'market' ? <DoublesLineups /> : <SellingLineups />}
       </View>
     </View>
   );
