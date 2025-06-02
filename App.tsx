@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import CreateScreen from './components/CreatePage';
 import BottomTabBar from './components/NavigateBar';
 import Header from './components/Header';
@@ -26,11 +27,13 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView className="flex-1">
-      <StatusBar style="auto" />
-      <Header balance={100.0} onInfoPress={() => {}} onMenuPress={() => {}} />
-      {renderScreen()}
-      <BottomTabBar currentTab={currentTab} onTabChange={setCurrentTab} />
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1">
+        <StatusBar style="auto" />
+        <Header balance={100.0} onInfoPress={() => {}} onMenuPress={() => {}} />
+        {renderScreen()}
+        <BottomTabBar currentTab={currentTab} onTabChange={setCurrentTab} />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

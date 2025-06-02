@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Lineup {
   id: string;
@@ -137,35 +138,41 @@ const renderLineupCard = (lineup: Lineup) => (
 );
 
 const CurrentLineups = () => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View className="mt-6">
+    <View style={{ flex: 1 }}>
       <Text className="mb-4 px-6 text-2xl font-bold">Active Lineups</Text>
-      <View className="px-4">
-        {sampleLineups.map((lineup, index) => (
-          <React.Fragment key={lineup.id}>
-            {index % 2 === 0 && (
-              <View className="mb-2 flex-row space-x-2">
-                {renderLineupCard(lineup)}
-                {index + 1 < sampleLineups.length && renderLineupCard(sampleLineups[index + 1])}
-              </View>
-            )}
-            {index % 2 === 0 && index < sampleLineups.length - 1 && (
-              <TouchableOpacity className="mb-4 self-end rounded-lg bg-black px-3 py-1.5">
-                <Text className="text-sm font-medium text-white">
-                  List ${lineup.wagerAmount} → ${lineup.potentialWin}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </React.Fragment>
-        ))}
-        {sampleLineups.length % 2 === 1 && (
-          <TouchableOpacity className="mb-4 self-end rounded-lg bg-black px-3 py-1.5">
-            <Text className="text-sm font-medium text-white">
-              List ${sampleLineups[sampleLineups.length - 1].wagerAmount} → $
-              {sampleLineups[sampleLineups.length - 1].potentialWin}
-            </Text>
-          </TouchableOpacity>
-        )}
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={{ paddingHorizontal: 16 }}>
+          {sampleLineups.map((lineup, index) => (
+            <React.Fragment key={lineup.id}>
+              {index % 2 === 0 && (
+                <View className="mb-2 flex-row space-x-2">
+                  {renderLineupCard(lineup)}
+                  {index + 1 < sampleLineups.length && renderLineupCard(sampleLineups[index + 1])}
+                </View>
+              )}
+              {index % 2 === 0 && index < sampleLineups.length - 1 && (
+                <TouchableOpacity className="mb-4 self-end rounded-lg bg-black px-3 py-1.5">
+                  <Text className="text-sm font-medium text-white">
+                    List ${lineup.wagerAmount} → ${lineup.potentialWin}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </React.Fragment>
+          ))}
+          {sampleLineups.length % 2 === 1 && (
+            <TouchableOpacity className="mb-4 self-end rounded-lg bg-black px-3 py-1.5">
+              <Text className="text-sm font-medium text-white">
+                List ${sampleLineups[sampleLineups.length - 1].wagerAmount} → $
+                {sampleLineups[sampleLineups.length - 1].potentialWin}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </ScrollView>
       </View>
     </View>
   );

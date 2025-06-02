@@ -1,14 +1,16 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 import Earnings from './Earnings';
 import CurrentLineups from './CurrentLineups';
 
 const MyLineups = () => {
   return (
-    <ScrollView className="flex-1 bg-white">
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <Earnings />
-      <CurrentLineups />
-    </ScrollView>
+      <View style={{ flex: 1 }}>
+        <CurrentLineups />
+      </View>
+    </View>
   );
 };
 
