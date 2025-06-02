@@ -5,6 +5,7 @@ interface Lineup {
   playerName: string;
   playerNumber: string;
   teamName: string;
+  opponent: string;
   jerseyColor: string;
   numberColor: string;
   type: 'PTS' | 'TO' | 'RBS';

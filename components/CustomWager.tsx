@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Pressable, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLineups } from '../context/LineupContext';
 
@@ -34,6 +34,7 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
       playerName: player.name,
       playerNumber: player.number,
       teamName: player.team,
+      opponent: player.opponent,
       jerseyColor: player.jerseyColor,
       numberColor: player.numberColor,
       type: 'PTS',
@@ -44,7 +45,12 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
       date: player.date,
     });
 
-    onClose();
+    // Show confirmation alert
+    Alert.alert(
+      'Lineup Created',
+      `Added ${player.name} ${direction === 'up' ? 'over' : 'under'} ${line} PTS to your lineups`,
+      [{ text: 'OK', onPress: onClose }]
+    );
   };
 
   return (

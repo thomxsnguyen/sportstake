@@ -18,99 +18,162 @@ interface Lineup {
   potentialWin: number;
   date: string;
   currentValue: number;
+  opponent: string;
 }
 
 interface GameGroup {
-  date: string;
+  gameId: string;
+  team1: string;
+  team2: string;
   lineups: Lineup[];
+  totalPotentialWin: number;
+  wagerAmount: number;
 }
 
 const renderLineupCard = (lineup: Lineup) => (
-  <View className="flex-1 rounded-xl bg-gray-50 p-3">
-    <View className="flex-row items-start justify-between">
-      <View className="flex-row">
-        <View className="items-center" style={{ width: 52 }}>
-          <View className="relative h-[60px] w-[52px]">
-            <View
-              className="absolute inset-0 rounded-lg"
-              style={{ backgroundColor: lineup.jerseyColor }}>
-              <Text
-                className="text-center text-2xl font-bold"
-                style={{ color: lineup.numberColor }}>
-                {lineup.playerNumber}
-              </Text>
-            </View>
+  <View className="flex-1">
+    <View className="p-3">
+      <View className="flex-row items-center justify-between">
+        {/* Left side - Jersey and Name */}
+        <View className="items-center">
+          {/* Jersey - Much taller box */}
+          <View
+            className="h-[80px] w-16 rounded-lg"
+            style={{ backgroundColor: lineup.jerseyColor }}>
+            <Text
+              className="text-center text-3xl font-bold"
+              style={{ color: lineup.numberColor, lineHeight: 80 }}>
+              {lineup.playerNumber}
+            </Text>
           </View>
-          <Text className="mt-1 text-center text-xs" numberOfLines={2}>
+
+          {/* Player Name */}
+          <Text className="mt-1 text-xs font-semibold" numberOfLines={1}>
             {lineup.playerName}
           </Text>
         </View>
 
-        <View className="ml-3 items-center" style={{ width: 60 }}>
-          <View className="flex-row items-center justify-center">
-            <Ionicons
-              name={lineup.direction === 'up' ? 'arrow-up' : 'arrow-down'}
-              size={14}
-              color={lineup.direction === 'up' ? '#22C55E' : '#EF4444'}
-            />
-            <Text
-              className={`ml-1 text-sm font-semibold ${
-                lineup.direction === 'up' ? 'text-green-500' : 'text-red-500'
-              }`}>
-              {lineup.line} {lineup.type}
-            </Text>
-          </View>
-
-          <View className="my-1 h-[36px] w-[36px] items-center justify-center rounded-full border-4 border-blue-400">
-            <Text className="text-sm font-bold">{lineup.currentValue}</Text>
+        {/* Right side - Stats - All centered */}
+        <View className="items-center space-y-2">
+          {/* Points container */}
+          <View className="items-center">
+            <View className="flex-row items-center">
+              <Ionicons
+                name={lineup.direction === 'up' ? 'arrow-up' : 'arrow-down'}
+                size={10}
+                color={lineup.direction === 'up' ? '#22C55E' : '#EF4444'}
+              />
+              <Text
+                className={`text-[10px] font-bold ${
+                  lineup.direction === 'up' ? 'text-green-500' : 'text-red-500'
+                }`}>
+                {lineup.line}
+              </Text>
+            </View>
             <Text className="text-[8px] text-gray-500">{lineup.type}</Text>
           </View>
 
-          <Text className="text-xs text-gray-500">{lineup.date}</Text>
+          {/* Current value circle */}
+          <View className="items-center space-y-1">
+            <View className="h-6 w-6 items-center justify-center rounded-full border border-blue-400">
+              <Text className="text-[8px] font-bold">{lineup.currentValue}</Text>
+              <Text className="text-[6px] text-gray-500">{lineup.type}</Text>
+            </View>
+            <Text className="text-[8px] text-gray-500">3Q 1:23</Text>
+          </View>
         </View>
       </View>
-
-      <TouchableOpacity className="self-center rounded-lg bg-black px-3 py-1.5">
-        <Text className="text-sm font-medium text-white">
-          List ${lineup.wagerAmount} → ${lineup.potentialWin}
-        </Text>
-      </TouchableOpacity>
     </View>
   </View>
 );
 
-const GameBox = ({ date, lineups }: GameGroup) => (
-  <View className="mb-6 rounded-xl bg-gray-100 p-4">
-    <Text className="mb-3 text-lg font-semibold">{date}</Text>
-    <View className="space-y-2">
-      {lineups.map((lineup, index) => (
-        <React.Fragment key={lineup.id}>{renderLineupCard(lineup)}</React.Fragment>
-      ))}
+const GameBox = ({ lineups, totalPotentialWin, wagerAmount }: GameGroup) => {
+  // Split lineups into rows of 2
+  const rows = lineups.reduce<Lineup[][]>((acc, lineup, index) => {
+    const rowIndex = Math.floor(index / 2);
+    if (!acc[rowIndex]) {
+      acc[rowIndex] = [];
+    }
+    acc[rowIndex].push(lineup);
+    return acc;
+  }, []);
+
+  return (
+    <View className="mb-4 flex-row">
+      {/* Main container for all lineups */}
+      <View className="flex-1 overflow-hidden rounded-xl bg-gray-50">
+        {rows.map((rowLineups, rowIndex) => (
+          <View key={rowIndex}>
+            {/* Row of lineups */}
+            <View className="flex-row">
+              {rowLineups.length === 1 ? (
+                // Single lineup - centered
+                <View className="w-1/2 self-center">{renderLineupCard(rowLineups[0])}</View>
+              ) : (
+                // Two lineups with divider
+                <>
+                  <View className="w-1/2">{renderLineupCard(rowLineups[0])}</View>
+                  <View className="my-4 w-[1px] bg-gray-200" />
+                  <View className="w-1/2">{renderLineupCard(rowLineups[1])}</View>
+                </>
+              )}
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* List button */}
+      <View className="ml-2 self-center">
+        <TouchableOpacity
+          className="rounded-lg bg-black px-3 py-1.5 shadow-lg"
+          style={{
+            elevation: 3,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 3,
+          }}>
+          <View className="flex-column items-center">
+            <Text className="mr-1.5 text-lg font-bold text-white">List</Text>
+            <Text className="text-xs">
+              <Text className="text-white">${wagerAmount} → </Text>
+              <Text style={{ color: '#4ADE80' }}>${totalPotentialWin}</Text>
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const CurrentLineups = () => {
   const insets = useSafeAreaInsets();
   const { lineups } = useLineups();
 
-  // Group lineups by date
-  const groupedLineups = lineups.reduce<Record<string, Lineup[]>>((groups, lineup) => {
-    const date = lineup.date;
-    if (!groups[date]) {
-      groups[date] = [];
+  // Group lineups by specific game matchup
+  const groupedLineups = lineups.reduce<Record<string, GameGroup>>((groups, lineup) => {
+    // Create a consistent game ID by sorting team names
+    const [team1, team2] = [lineup.teamName, lineup.opponent].sort();
+    const gameId = `${team1}_${team2}`;
+
+    if (!groups[gameId]) {
+      groups[gameId] = {
+        gameId,
+        team1,
+        team2,
+        lineups: [],
+        totalPotentialWin: 0,
+        wagerAmount: 0,
+      };
     }
-    groups[date].push(lineup);
+    groups[gameId].lineups.push(lineup);
+    groups[gameId].totalPotentialWin += lineup.potentialWin;
+    groups[gameId].wagerAmount += lineup.wagerAmount;
     return groups;
   }, {});
 
-  // Convert grouped lineups to array and sort by date
-  const gameGroups: GameGroup[] = Object.entries(groupedLineups)
-    .map(([date, lineups]) => ({
-      date,
-      lineups,
-    }))
-    .sort((a, b) => a.date.localeCompare(b.date));
+  // Convert grouped lineups to array
+  const gameGroups = Object.values(groupedLineups);
 
   return (
     <View style={{ flex: 1 }}>
@@ -119,7 +182,7 @@ const CurrentLineups = () => {
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{ paddingHorizontal: 16 }}>
         {gameGroups.map((group) => (
-          <GameBox key={group.date} date={group.date} lineups={group.lineups} />
+          <GameBox key={group.gameId} {...group} />
         ))}
       </ScrollView>
     </View>
