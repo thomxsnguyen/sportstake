@@ -5,6 +5,19 @@ import { Ionicons } from '@expo/vector-icons';
 interface CustomWagerProps {
   isVisible: boolean;
   onClose: () => void;
+  onSubmit?: (wager: {
+    playerName: string;
+    playerNumber: string;
+    teamName: string;
+    jerseyColor: string;
+    numberColor: string;
+    type: 'PTS' | 'TO' | 'RBS';
+    line: number;
+    direction: 'up' | 'down';
+    wagerAmount: number;
+    potentialWin: number;
+    date: string;
+  }) => void;
   player: {
     name: string;
     number: string;
@@ -16,13 +29,35 @@ interface CustomWagerProps {
   };
 }
 
-const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player }) => {
+const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, onSubmit, player }) => {
   const [line, setLine] = useState(28);
   const [direction, setDirection] = useState<'up' | 'down' | null>(null);
 
   const adjustLine = (newDirection: 'up' | 'down') => {
     setDirection(newDirection);
     setLine((prev) => (newDirection === 'up' ? prev + 0.5 : prev - 0.5));
+  };
+
+  const handleSubmit = () => {
+    if (!direction) return;
+
+    if (onSubmit) {
+      onSubmit({
+        playerName: player.name,
+        playerNumber: player.number,
+        teamName: player.team,
+        jerseyColor: player.jerseyColor,
+        numberColor: player.numberColor,
+        type: 'PTS',
+        line: line,
+        direction: direction,
+        wagerAmount: 100,
+        potentialWin: 175,
+        date: player.date,
+      });
+    }
+
+    onClose();
   };
 
   return (
@@ -86,7 +121,7 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
             </TouchableOpacity>
 
             <View className="items-center px-4">
-              <Text className="text-3xl font-bold">35</Text>
+              <Text className="text-3xl font-bold">{line}</Text>
               <Text className="text-gray-500">PTS</Text>
             </View>
 
@@ -113,18 +148,23 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
           <View className="mb-8 space-y-4">
             <View className="flex-row justify-between">
               <Text className="text-lg">Payout</Text>
-              <Text className="text-lg">.5x</Text>
+              <Text className="text-lg">1.75x</Text>
             </View>
             <View className="flex-row justify-between">
-              <Text className="text-lg">Prize Pool</Text>
+              <Text className="text-lg">Wager Amount</Text>
               <Text className="text-lg">$100</Text>
+            </View>
+            <View className="flex-row justify-between">
+              <Text className="text-lg">Potential Win</Text>
+              <Text className="text-lg">$175</Text>
             </View>
           </View>
 
           {/* Submit Button */}
-          <TouchableOpacity className="flex-row items-center justify-center rounded-full bg-blue-400 px-6 py-4">
-            <Ionicons name="chevron-forward" size={24} color="white" />
-            <Text className="ml-2 text-xl font-semibold text-white">SUBMIT LINE</Text>
+          <TouchableOpacity
+            className="flex-row items-center justify-center rounded-full bg-blue-400 px-6 py-4"
+            onPress={handleSubmit}>
+            <Text className="text-xl font-semibold text-white">SUBMIT $100 → $175</Text>
           </TouchableOpacity>
         </Pressable>
       </Pressable>

@@ -126,21 +126,6 @@ const Events = () => {
     </View>
   );
 
-  const filteredPlayers = players.filter(
-    (player) =>
-      player.team === gameMatches.find((m) => m.id === selectedMatch)?.team1 ||
-      player.team === gameMatches.find((m) => m.id === selectedMatch)?.team2 ||
-      player.opponent === gameMatches.find((m) => m.id === selectedMatch)?.team1 ||
-      player.opponent === gameMatches.find((m) => m.id === selectedMatch)?.team2
-  );
-
-  // Calculate number of rows needed
-  const itemsPerRow = 3;
-  const numRows = Math.ceil(filteredPlayers.length / itemsPerRow);
-  const rows = Array.from({ length: numRows }, (_, rowIndex) =>
-    filteredPlayers.slice(rowIndex * itemsPerRow, (rowIndex + 1) * itemsPerRow)
-  );
-
   return (
     <View className="flex-1 bg-white">
       <Text className="mb-3 px-4 text-lg font-semibold">Events</Text>
@@ -171,29 +156,29 @@ const Events = () => {
 
       {/* Player Cards Grid */}
       <ScrollView className="px-4">
-        {rows.map((row, rowIndex) => (
-          <View key={rowIndex} className="mb-3 flex-row justify-between">
-            {Array.from({ length: itemsPerRow }).map((_, colIndex) => {
-              const player = row[colIndex];
-              if (!player) {
-                return <View key={`empty-${colIndex}`} className="w-[31%]" />;
-              }
-              return (
-                <TouchableOpacity
-                  key={player.id}
-                  className="w-[31%] items-center rounded-xl bg-gray-50 p-3"
-                  onPress={() => handlePlayerSelect(player)}
-                  activeOpacity={0.7}>
-                  {renderJersey(player)}
-                  <Text className="mb-1 mt-2 text-center font-semibold">{player.name}</Text>
-                  <Text className="text-center text-xs text-gray-500">
-                    vs {player.opponent} {player.date}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        ))}
+        <View className="flex-row flex-wrap justify-between">
+          {players
+            .filter(
+              (player) =>
+                player.team === gameMatches.find((m) => m.id === selectedMatch)?.team1 ||
+                player.team === gameMatches.find((m) => m.id === selectedMatch)?.team2 ||
+                player.opponent === gameMatches.find((m) => m.id === selectedMatch)?.team1 ||
+                player.opponent === gameMatches.find((m) => m.id === selectedMatch)?.team2
+            )
+            .map((player) => (
+              <TouchableOpacity
+                key={player.id}
+                className="mb-3 w-[31%] items-center rounded-xl bg-gray-50 p-3"
+                onPress={() => handlePlayerSelect(player)}
+                activeOpacity={0.7}>
+                {renderJersey(player)}
+                <Text className="mb-1 mt-2 text-center font-semibold">{player.name}</Text>
+                <Text className="text-center text-xs text-gray-500">
+                  vs {player.opponent} {player.date}
+                </Text>
+              </TouchableOpacity>
+            ))}
+        </View>
       </ScrollView>
 
       {/* Wager Popup */}

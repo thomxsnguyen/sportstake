@@ -2,19 +2,24 @@ import React, { useState } from 'react';
 import { View, Text, Dimensions, TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
+type TimeRange = '1W' | '1M' | '3M' | '6M' | '1Y';
+
 interface DataPoint {
   period: string;
   value: number;
 }
 
 interface TimeRangeData {
-  [key: string]: {
-    data: DataPoint[];
-    total: number;
-  };
+  data: DataPoint[];
+  total: number;
 }
 
-const timeRangeData: TimeRangeData = {
+interface BalanceInfo {
+  cash: number;
+  atRisk: number;
+}
+
+const timeRangeData: Record<TimeRange, TimeRangeData> = {
   '1W': {
     data: [
       { period: 'Mon', value: 1000 },
@@ -66,10 +71,18 @@ const timeRangeData: TimeRangeData = {
   },
 };
 
-const timeRanges = ['1W', '1M', '3M', '6M', '1Y'];
+const balanceData: Record<TimeRange, BalanceInfo> = {
+  '1W': { cash: 850, atRisk: 500 },
+  '1M': { cash: 1000, atRisk: 600 },
+  '3M': { cash: 1200, atRisk: 600 },
+  '6M': { cash: 1500, atRisk: 600 },
+  '1Y': { cash: 1800, atRisk: 700 },
+};
 
-const Lineup = () => {
-  const [selectedRange, setSelectedRange] = useState('1W');
+const timeRanges: TimeRange[] = ['1W', '1M', '3M', '6M', '1Y'];
+
+const Earnings = () => {
+  const [selectedRange, setSelectedRange] = useState<TimeRange>('1W');
   const screenWidth = Dimensions.get('window').width;
   const graphWidth = screenWidth - 48;
   const graphHeight = 140;
@@ -117,6 +130,8 @@ const Lineup = () => {
   });
 
   const smoothPath = points.join(' ');
+  const currentBalance = balanceData[selectedRange];
+  const totalBalance = currentBalance.cash + currentBalance.atRisk;
 
   return (
     <View className="mx-6 rounded-3xl bg-gray-50 p-5">
@@ -140,7 +155,7 @@ const Lineup = () => {
         </View>
 
         {/* Time range selector */}
-        <View className="mt-6 flex-row justify-between">
+        <View className="mt-4 flex-row justify-between">
           {timeRanges.map((range) => (
             <TouchableOpacity
               key={range}
@@ -149,15 +164,39 @@ const Lineup = () => {
                 selectedRange === range ? 'bg-[#60A5FA]' : 'bg-transparent'
               }`}>
               <Text
-                className={`text-sm ${selectedRange === range ? 'text-white' : 'text-gray-500'}`}>
+                className={`text-xs ${selectedRange === range ? 'text-white' : 'text-gray-500'}`}>
                 {range}
               </Text>
             </TouchableOpacity>
           ))}
+        </View>
+
+        {/* Balance Breakdown */}
+        <View className="mt-4 border-t border-gray-200 pt-4">
+          <View className="flex-row items-center justify-between">
+            <View>
+              <Text className="text-xs text-gray-500">Cash Balance</Text>
+              <Text className="text-base font-semibold">
+                ${currentBalance.cash.toLocaleString()}
+              </Text>
+            </View>
+            <View>
+              <Text className="text-xs text-gray-500">At Risk</Text>
+              <Text className="text-base font-semibold text-orange-500">
+                ${currentBalance.atRisk.toLocaleString()}
+              </Text>
+            </View>
+            <View>
+              <Text className="text-xs text-gray-500">Total Balance</Text>
+              <Text className="text-base font-semibold text-green-500">
+                ${totalBalance.toLocaleString()}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
     </View>
   );
 };
 
-export default Lineup;
+export default Earnings;

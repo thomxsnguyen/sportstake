@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, View, Text } from 'react-native';
 import CreateScreen from './components/CreatePage';
-import BottomTabBar from 'components/NavigateBar';
-import Header from 'components/Header';
-import Lineup from './components/Lineup';
-
+import BottomTabBar from './components/NavigateBar';
+import Header from './components/Header';
+import MyLineups from './components/MyLineups';
 import './global.css';
 
 export default function App() {
@@ -16,7 +15,7 @@ export default function App() {
       case 'create':
         return <CreateScreen />;
       case 'lineup':
-        return <Lineup />;
+        return <MyLineups />;
       default:
         return (
           <View>
