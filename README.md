@@ -1,4 +1,4 @@
-# My Expo App
+# Project Overview
 
 A React Native mobile application built with Expo for sports betting and lineup management. Features lineup creation, trading functionality, and pick management.
 
