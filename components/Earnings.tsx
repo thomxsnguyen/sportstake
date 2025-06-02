@@ -85,10 +85,10 @@ const Earnings = () => {
   const [selectedRange, setSelectedRange] = useState<TimeRange>('1W');
   const screenWidth = Dimensions.get('window').width;
   const graphWidth = screenWidth - 48;
-  const graphHeight = 140;
+  const graphHeight = 100;
   const paddingHorizontal = 16;
-  const paddingBottom = 30;
-  const paddingTop = 16;
+  const paddingBottom = 20;
+  const paddingTop = 12;
 
   const currentData = timeRangeData[selectedRange].data;
 
@@ -136,7 +136,7 @@ const Earnings = () => {
   return (
     <View className="mx-6 rounded-3xl bg-gray-50 p-5">
       <Text className="mb-1 text-lg text-[#6B7280]">Lifetime Prizes</Text>
-      <Text className="mb-4 text-4xl font-semibold text-[#60A5FA]">
+      <Text className="mb-2 text-4xl font-semibold text-[#60A5FA]">
         ${timeRangeData[selectedRange].total.toLocaleString()}
       </Text>
 
@@ -155,7 +155,7 @@ const Earnings = () => {
         </View>
 
         {/* Time range selector */}
-        <View className="mt-4 flex-row justify-between">
+        <View className="mt-2 flex-row justify-between">
           {timeRanges.map((range) => (
             <TouchableOpacity
               key={range}
@@ -171,8 +171,8 @@ const Earnings = () => {
           ))}
         </View>
 
-        {/* Balance Breakdown */}
-        <View className="mt-4 border-t border-gray-200 pt-4">
+        {/* Balance Breakdown - removed border-t and adjusted spacing */}
+        <View className="mt-3">
           <View className="flex-row items-center justify-between">
             <View>
               <Text className="text-xs text-gray-500">Cash Balance</Text>
