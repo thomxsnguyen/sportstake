@@ -36,15 +36,29 @@ const renderLineupCard = (lineup: Lineup) => (
       <View className="flex-row items-center justify-between">
         {/* Left side - Jersey and Name */}
         <View className="items-center">
-          {/* Jersey - Much taller box */}
-          <View
-            className="h-[80px] w-16 rounded-lg"
-            style={{ backgroundColor: lineup.jerseyColor }}>
-            <Text
-              className="text-center text-3xl font-bold"
-              style={{ color: lineup.numberColor, lineHeight: 80 }}>
-              {lineup.playerNumber}
-            </Text>
+          {/* Jersey */}
+          <View className="relative h-[80px] w-[70px]">
+            <View
+              className="absolute inset-0 rounded-lg"
+              style={{ backgroundColor: lineup.jerseyColor }}>
+              <View
+                className="absolute left-4 right-4 top-0 h-3 bg-white opacity-20"
+                style={{ borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}
+              />
+              <View
+                className="absolute -left-1 top-3 h-10 w-3 bg-white opacity-20"
+                style={{ borderTopRightRadius: 8, borderBottomRightRadius: 8 }}
+              />
+              <View
+                className="absolute -right-1 top-3 h-10 w-3 bg-white opacity-20"
+                style={{ borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
+              />
+              <View className="absolute inset-0 items-center justify-center">
+                <Text className="text-[32px] font-bold" style={{ color: lineup.numberColor }}>
+                  {lineup.playerNumber}
+                </Text>
+              </View>
+            </View>
           </View>
 
           {/* Player Name */}
@@ -53,33 +67,34 @@ const renderLineupCard = (lineup: Lineup) => (
           </Text>
         </View>
 
-        {/* Right side - Stats - All centered */}
-        <View className="items-center space-y-2">
-          {/* Points container */}
+        {/* Right side - Stats - Single vertical stack */}
+        <View className="flex-1 items-center justify-center">
           <View className="items-center">
+            {/* Arrow and Number */}
             <View className="flex-row items-center">
               <Ionicons
                 name={lineup.direction === 'up' ? 'arrow-up' : 'arrow-down'}
-                size={10}
+                size={12}
                 color={lineup.direction === 'up' ? '#22C55E' : '#EF4444'}
               />
               <Text
-                className={`text-[10px] font-bold ${
+                className={`text-xs font-bold ${
                   lineup.direction === 'up' ? 'text-green-500' : 'text-red-500'
                 }`}>
                 {lineup.line}
               </Text>
             </View>
-            <Text className="text-[8px] text-gray-500">{lineup.type}</Text>
-          </View>
 
-          {/* Current value circle */}
-          <View className="items-center space-y-1">
-            <View className="h-6 w-6 items-center justify-center rounded-full border border-blue-400">
-              <Text className="text-[8px] font-bold">{lineup.currentValue}</Text>
-              <Text className="text-[6px] text-gray-500">{lineup.type}</Text>
+            {/* Type */}
+            <Text className="text-[10px] text-gray-500">{lineup.type}</Text>
+
+            {/* Current value circle */}
+            <View className="mt-1 h-5 w-5 items-center justify-center rounded-full border border-blue-400">
+              <Text className="text-[10px] font-bold">{lineup.currentValue}</Text>
             </View>
-            <Text className="text-[8px] text-gray-500">3Q 1:23</Text>
+
+            {/* Game Time */}
+            <Text className="mt-0.5 text-[8px] text-gray-500">3Q 1:23</Text>
           </View>
         </View>
       </View>
@@ -133,8 +148,10 @@ const GameBox = ({
             {/* Row of lineups */}
             <View className="flex-row">
               {rowLineups.length === 1 ? (
-                // Single lineup - centered
-                <View className="w-1/2 self-center">{renderLineupCard(rowLineups[0])}</View>
+                // Single lineup - centered with flex
+                <View className="flex-1 flex-row justify-center">
+                  <View className="w-1/2">{renderLineupCard(rowLineups[0])}</View>
+                </View>
               ) : (
                 // Two lineups with divider
                 <>

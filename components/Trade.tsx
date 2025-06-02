@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Categories from './Categories';
+import DoublesLineups from './DoublesLineups';
 
 const Trade = () => {
   const [activeTab, setActiveTab] = useState<'market' | 'listings'>('market');
@@ -69,17 +70,9 @@ const Trade = () => {
       {/* Categories */}
       <Categories selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
 
-      {/* Content Area */}
+      {/* Doubles Section */}
       <View className="flex-1">
-        {activeTab === 'market' ? (
-          <View className="items-center justify-center">
-            <Text className="text-gray-500">Open Market Content Coming Soon</Text>
-          </View>
-        ) : (
-          <View className="items-center justify-center">
-            <Text className="text-gray-500">My Listings Content Coming Soon</Text>
-          </View>
-        )}
+        <DoublesLineups />
       </View>
     </View>
   );
