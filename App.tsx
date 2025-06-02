@@ -6,6 +6,7 @@ import CreateScreen from './components/CreatePage';
 import BottomTabBar from './components/NavigateBar';
 import Header from './components/Header';
 import MyLineups from './components/MyLineups';
+import { LineupProvider } from './context/LineupContext';
 import './global.css';
 
 export default function App() {
@@ -27,13 +28,15 @@ export default function App() {
   };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView className="flex-1">
-        <StatusBar style="auto" />
-        <Header balance={100.0} onInfoPress={() => {}} onMenuPress={() => {}} />
-        {renderScreen()}
-        <BottomTabBar currentTab={currentTab} onTabChange={setCurrentTab} />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <LineupProvider>
+      <SafeAreaProvider>
+        <SafeAreaView className="flex-1">
+          <StatusBar style="auto" />
+          <Header balance={100.0} onInfoPress={() => {}} onMenuPress={() => {}} />
+          {renderScreen()}
+          <BottomTabBar currentTab={currentTab} onTabChange={setCurrentTab} />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </LineupProvider>
   );
 }

@@ -1,23 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useLineups } from '../context/LineupContext';
 
 interface CustomWagerProps {
   isVisible: boolean;
   onClose: () => void;
-  onSubmit?: (wager: {
-    playerName: string;
-    playerNumber: string;
-    teamName: string;
-    jerseyColor: string;
-    numberColor: string;
-    type: 'PTS' | 'TO' | 'RBS';
-    line: number;
-    direction: 'up' | 'down';
-    wagerAmount: number;
-    potentialWin: number;
-    date: string;
-  }) => void;
   player: {
     name: string;
     number: string;
@@ -29,9 +17,10 @@ interface CustomWagerProps {
   };
 }
 
-const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, onSubmit, player }) => {
+const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player }) => {
   const [line, setLine] = useState(28);
   const [direction, setDirection] = useState<'up' | 'down' | null>(null);
+  const { addLineup } = useLineups();
 
   const adjustLine = (newDirection: 'up' | 'down') => {
     setDirection(newDirection);
@@ -41,21 +30,19 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, onSubmit,
   const handleSubmit = () => {
     if (!direction) return;
 
-    if (onSubmit) {
-      onSubmit({
-        playerName: player.name,
-        playerNumber: player.number,
-        teamName: player.team,
-        jerseyColor: player.jerseyColor,
-        numberColor: player.numberColor,
-        type: 'PTS',
-        line: line,
-        direction: direction,
-        wagerAmount: 100,
-        potentialWin: 175,
-        date: player.date,
-      });
-    }
+    addLineup({
+      playerName: player.name,
+      playerNumber: player.number,
+      teamName: player.team,
+      jerseyColor: player.jerseyColor,
+      numberColor: player.numberColor,
+      type: 'PTS',
+      line: line,
+      direction: direction,
+      wagerAmount: 100,
+      potentialWin: 175,
+      date: player.date,
+    });
 
     onClose();
   };
