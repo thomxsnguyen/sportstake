@@ -62,7 +62,7 @@ const renderLineupCard = (lineup: Lineup) => (
           </View>
 
           {/* Player Name */}
-          <Text className="mt-1 text-xs font-semibold" numberOfLines={1}>
+          <Text className="mt-1 text-[11px] font-semibold" numberOfLines={1}>
             {lineup.playerName}
           </Text>
         </View>

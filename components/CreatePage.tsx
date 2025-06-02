@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import Categories from './Categories';
 import Events from './Events';
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-}
 
 const CreatePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,7 +24,10 @@ const CreatePage = () => {
           </View>
         </View>
 
+        {/* Categories */}
         <Categories selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
+
+        {/* Events List */}
         <Events />
       </View>
     </View>

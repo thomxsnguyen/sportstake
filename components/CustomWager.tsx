@@ -28,21 +28,25 @@ const STAT_LINES = {
 
 const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player }) => {
   const [statType, setStatType] = useState<StatCategory>('PTS');
-  const [line, setLine] = useState(STAT_LINES[statType]);
+  const [line, setLine] = useState(35);
   const [direction, setDirection] = useState<'up' | 'down' | null>(null);
   const [showStatDropdown, setShowStatDropdown] = useState(false);
   const { addLineup } = useLineups();
-
-  const adjustLine = (newDirection: 'up' | 'down') => {
-    setDirection(newDirection);
-    setLine((prev) => (newDirection === 'up' ? prev + 0.5 : prev - 0.5));
-  };
 
   const handleStatSelect = (newStat: StatCategory) => {
     setStatType(newStat);
     setLine(STAT_LINES[newStat]);
     setShowStatDropdown(false);
     setDirection(null);
+  };
+
+  const adjustLine = (newDirection: 'up' | 'down') => {
+    setDirection(newDirection);
+    if (newDirection === 'up') {
+      setLine((prev) => prev + 0.5);
+    } else {
+      setLine((prev) => prev - 0.5);
+    }
   };
 
   const handleSubmit = () => {
@@ -59,11 +63,10 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
       line: line,
       direction: direction,
       wagerAmount: 100,
-      potentialWin: 175,
+      potentialWin: 150,
       date: player.date,
     });
 
-    // Show confirmation alert
     Alert.alert(
       'Lineup Created',
       `Added ${player.name} ${direction === 'up' ? 'over' : 'under'} ${line} ${statType} to your lineups`,
@@ -85,15 +88,18 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
 
               {/* Stat Type Dropdown */}
               {showStatDropdown && (
-                <View className="absolute right-0 top-8 w-36 rounded-lg bg-white shadow-lg">
+                <View
+                  className="absolute left-0 top-8 z-50 w-32 rounded-lg bg-white shadow-lg"
+                  style={{ marginLeft: -10 }}>
                   {Object.entries(STAT_DISPLAY_NAMES).map(([key, name]) => (
                     <TouchableOpacity
                       key={key}
                       onPress={() => handleStatSelect(key as StatCategory)}
-                      className={`px-4 py-3 ${
+                      className={`px-2 py-1.5 ${
                         key === statType ? 'bg-blue-50' : ''
                       } border-b border-gray-100`}>
-                      <Text className={`${key === statType ? 'font-medium text-blue-500' : ''}`}>
+                      <Text
+                        className={`text-xs ${key === statType ? 'font-medium text-blue-500' : ''}`}>
                         {name}
                       </Text>
                     </TouchableOpacity>
@@ -137,11 +143,11 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
           </View>
 
           {/* Stats Section */}
-          <View className="mb-8 flex-row items-center justify-center space-x-4">
-            <TouchableOpacity className="items-center" onPress={() => adjustLine('down')}>
+          <View className="mb-6 flex-row items-center justify-center">
+            <TouchableOpacity className="mr-8" onPress={() => adjustLine('down')}>
               <View
-                className={`mb-1 h-12 w-12 items-center justify-center rounded-full ${
-                  direction === 'down' ? 'bg-red-500' : 'bg-red-100'
+                className={`h-12 w-12 items-center justify-center rounded-full border-2 ${
+                  direction === 'down' ? 'border-red-500 bg-red-500' : 'border-red-300'
                 }`}>
                 <Ionicons
                   name="arrow-down"
@@ -151,51 +157,52 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
               </View>
             </TouchableOpacity>
 
-            <View className="items-center px-4">
-              <Text className="text-3xl font-bold">{line}</Text>
-              <Text className="text-gray-500">{statType}</Text>
+            <View className="items-center">
+              <Text className="text-4xl font-bold">
+                {line} {statType}
+              </Text>
             </View>
 
-            <TouchableOpacity className="items-center" onPress={() => adjustLine('up')}>
+            <TouchableOpacity className="ml-8" onPress={() => adjustLine('up')}>
               <View
-                className={`mb-1 h-12 w-12 items-center justify-center rounded-full ${
-                  direction === 'up' ? 'bg-green-500' : 'bg-green-100'
+                className={`h-12 w-12 items-center justify-center rounded-full border-2 ${
+                  direction === 'up' ? 'border-gray-400 bg-gray-400' : 'border-gray-300'
                 }`}>
                 <Ionicons
                   name="arrow-up"
                   size={24}
-                  color={direction === 'up' ? '#fff' : '#22C55E'}
+                  color={direction === 'up' ? '#fff' : '#9CA3AF'}
                 />
               </View>
             </TouchableOpacity>
           </View>
 
-          {/* Line Section */}
-          <View className="mb-8">
-            <Text className="mb-2 text-center text-blue-500">Sportstake Line: {line}</Text>
+          {/* Sportstake Line */}
+          <View className="mb-8 items-center">
+            <Text className="text-blue-500">
+              <Text className="font-semibold">Sportstake</Text> Line: {STAT_LINES[statType]}
+            </Text>
           </View>
 
           {/* Payout Section */}
-          <View className="mb-8 space-y-4">
-            <View className="flex-row justify-between">
-              <Text className="text-lg">Payout</Text>
-              <Text className="text-lg">1.75x</Text>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-lg">Wager Amount</Text>
-              <Text className="text-lg">$100</Text>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-lg">Potential Win</Text>
-              <Text className="text-lg">$175</Text>
-            </View>
+          <View className="mb-2 flex-row justify-between">
+            <Text className="text-xl font-semibold">Payout</Text>
+            <Text className="text-xl">.5x</Text>
+          </View>
+
+          <View className="mb-8 flex-row justify-between">
+            <Text className="text-xl font-semibold">Prize Pool</Text>
+            <Text className="text-xl">$100</Text>
           </View>
 
           {/* Submit Button */}
           <TouchableOpacity
-            className="flex-row items-center justify-center rounded-full bg-blue-400 px-6 py-4"
+            className="flex-row items-center rounded-full bg-blue-400 px-6 py-4"
             onPress={handleSubmit}>
-            <Text className="text-xl font-semibold text-white">SUBMIT $100 → $175</Text>
+            <View className="mr-4 h-8 w-8 items-center justify-center rounded-full bg-white/20">
+              <Ionicons name="chevron-forward" size={20} color="#fff" />
+            </View>
+            <Text className="flex-1 text-center text-xl font-semibold text-white">SUBMIT LINE</Text>
           </TouchableOpacity>
         </Pressable>
       </Pressable>

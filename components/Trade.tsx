@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Categories from './Categories';
 import DoublesLineups from './DoublesLineups';
@@ -8,6 +8,12 @@ const Trade = () => {
   const [activeTab, setActiveTab] = useState<'market' | 'listings'>('market');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+
+  const handleCategorySelect = (id: string) => {
+    setSelectedCategory(id);
+    setShowAllCategories(false);
+  };
 
   return (
     <View className="flex-1">
@@ -18,9 +24,7 @@ const Trade = () => {
             {/* Toggle Background */}
             <View className="absolute inset-0 flex-row">
               <View
-                className={`h-full w-1/2 rounded-full transition-all ${
-                  activeTab === 'market' ? 'bg-[#1B1B1B]' : 'bg-transparent'
-                }`}
+                className="h-full w-1/2 rounded-full bg-[#1B1B1B] transition-all"
                 style={{
                   transform: [{ translateX: activeTab === 'listings' ? '100%' : '0%' }],
                 }}
@@ -31,7 +35,10 @@ const Trade = () => {
             <View className="relative z-10 h-full flex-row">
               <TouchableOpacity
                 className="flex-1 items-center justify-center"
-                onPress={() => setActiveTab('market')}>
+                onPress={() => {
+                  setActiveTab('market');
+                  setSelectedCategory(null);
+                }}>
                 <Text
                   className={`text-base font-semibold ${
                     activeTab === 'market' ? 'text-white' : 'text-gray-600'
@@ -41,7 +48,10 @@ const Trade = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 className="flex-1 items-center justify-center"
-                onPress={() => setActiveTab('listings')}>
+                onPress={() => {
+                  setActiveTab('listings');
+                  setSelectedCategory(null);
+                }}>
                 <Text
                   className={`text-base font-semibold ${
                     activeTab === 'listings' ? 'text-white' : 'text-gray-600'
@@ -68,7 +78,13 @@ const Trade = () => {
       </View>
 
       {/* Categories */}
-      <Categories selectedCategory={selectedCategory} onSelectCategory={setSelectedCategory} />
+      <Categories
+        selectedCategory={selectedCategory}
+        onSelectCategory={handleCategorySelect}
+        showAllCategories={showAllCategories}
+        onViewAllPress={() => setShowAllCategories(true)}
+        onCloseModal={() => setShowAllCategories(false)}
+      />
 
       {/* Doubles Section */}
       <View className="flex-1">

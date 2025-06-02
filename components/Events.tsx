@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import CustomWager from './CustomWager';
+import Categories from './Categories';
 
 interface GameMatch {
   id: string;
@@ -235,6 +237,14 @@ const players: Player[] = [
   },
 ];
 
+const eventCategories = [
+  { id: '1', name: 'Basketball', icon: 'sports-basketball' },
+  { id: '2', name: 'Football', icon: 'sports-football' },
+  { id: '3', name: 'Baseball', icon: 'sports-baseball' },
+  { id: '4', name: 'Soccer', icon: 'sports-soccer' },
+  { id: '5', name: 'Hockey', icon: 'sports-hockey' },
+];
+
 const Events = () => {
   const [selectedMatch, setSelectedMatch] = useState<string>('1');
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
@@ -273,7 +283,7 @@ const Events = () => {
 
   return (
     <View className="flex-1 bg-white">
-      <Text className="mb-3 px-4 text-lg font-semibold">Events</Text>
+      <Text className="mb-3 px-6 text-lg font-semibold">Events</Text>
 
       {/* Game matchups section */}
       <View className="mb-3 px-4">
@@ -317,8 +327,10 @@ const Events = () => {
                 onPress={() => handlePlayerSelect(player)}
                 activeOpacity={0.7}>
                 {renderJersey(player)}
-                <Text className="mb-1 mt-2 text-center font-semibold">{player.name}</Text>
-                <Text className="text-center text-xs text-gray-500">
+                <Text className="mt-1 text-[11px] font-semibold" numberOfLines={1}>
+                  {player.name}
+                </Text>
+                <Text className="text-[9px] text-gray-500">
                   vs {player.opponent} {player.date}
                 </Text>
               </TouchableOpacity>
