@@ -2,6 +2,26 @@
 
 A React Native mobile application built with Expo for sports betting and lineup management. Features lineup creation, trading functionality, and pick management.
 
+## Overview
+
+### What I Built
+
+Three main screens: Create page for making lineups, MyLineups to see your lineups, and Trade for trading functionality. Also built a header with balance display, bottom navigation bar, and a bunch of components for different features like earnings tracking, events, custom wagers, and managing different types of lineups.
+
+### Quick Overview
+
+**Expo:** Went with Expo because it's just easier to get something working quickly across platforms. Don't have to mess with native code setup.
+
+**State Management:** Used React Context for sharing lineup data between components. Could have used Redux but Context seemed like enough for this size app.
+
+**Styling:** Chose NativeWind because I like Tailwind and wanted consistent styling. Makes it faster to build UI without writing custom CSS for everything.
+
+**Components:** Split everything into separate components so it's easier to work with. Each major feature gets its own file instead of cramming everything together.
+
+**Navigation:** Built a custom tab bar instead of using React Navigation because I wanted more control over how it looks and behaves.
+
+**TypeScript:** Used TypeScript because dealing with money/betting data and want to catch errors before they happen.
+
 ## Prerequisites
 
 - Node.js (version 18 or later)
