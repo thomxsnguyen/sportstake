@@ -1,5 +1,16 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+export type StatCategory = 'PTS' | 'REB' | 'AST' | 'BLK' | 'STL' | '3PM';
+
+export const STAT_DISPLAY_NAMES: Record<StatCategory, string> = {
+  PTS: 'Points',
+  REB: 'Rebounds',
+  AST: 'Assists',
+  BLK: 'Blocks',
+  STL: 'Steals',
+  '3PM': '3-Pointers',
+};
+
 interface Lineup {
   id: string;
   playerName: string;
@@ -8,7 +19,7 @@ interface Lineup {
   opponent: string;
   jerseyColor: string;
   numberColor: string;
-  type: 'PTS' | 'TO' | 'RBS';
+  type: StatCategory;
   line: number;
   direction: 'up' | 'down';
   wagerAmount: number;

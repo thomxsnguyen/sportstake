@@ -10,8 +10,8 @@ interface TabBarProps {
 const BottomTabBar: React.FC<TabBarProps> = ({ currentTab, onTabChange }) => {
   const tabs = [
     { id: 'pickem', label: "Pick'em", icon: 'card-outline' },
-    { id: 'lineup', label: 'Lineup', icon: 'list-outline' },
     { id: 'trade', label: 'Trade', icon: 'swap-horizontal-outline' },
+    { id: 'lineup', label: 'Lineup', icon: 'list-outline' },
     { id: 'create', label: 'Create', icon: 'add-circle-outline' },
     { id: 'promos', label: 'Promos', icon: 'gift-outline' },
   ];

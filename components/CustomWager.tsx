@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Pressable, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useLineups } from '../context/LineupContext';
+import { useLineups, StatCategory, STAT_DISPLAY_NAMES } from '../context/LineupContext';
 
 interface CustomWagerProps {
   isVisible: boolean;
@@ -17,14 +17,32 @@ interface CustomWagerProps {
   };
 }
 
+const STAT_LINES = {
+  PTS: 28,
+  REB: 8,
+  AST: 7,
+  BLK: 1.5,
+  STL: 1.5,
+  '3PM': 2.5,
+};
+
 const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player }) => {
-  const [line, setLine] = useState(28);
+  const [statType, setStatType] = useState<StatCategory>('PTS');
+  const [line, setLine] = useState(STAT_LINES[statType]);
   const [direction, setDirection] = useState<'up' | 'down' | null>(null);
+  const [showStatDropdown, setShowStatDropdown] = useState(false);
   const { addLineup } = useLineups();
 
   const adjustLine = (newDirection: 'up' | 'down') => {
     setDirection(newDirection);
     setLine((prev) => (newDirection === 'up' ? prev + 0.5 : prev - 0.5));
+  };
+
+  const handleStatSelect = (newStat: StatCategory) => {
+    setStatType(newStat);
+    setLine(STAT_LINES[newStat]);
+    setShowStatDropdown(false);
+    setDirection(null);
   };
 
   const handleSubmit = () => {
@@ -37,7 +55,7 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
       opponent: player.opponent,
       jerseyColor: player.jerseyColor,
       numberColor: player.numberColor,
-      type: 'PTS',
+      type: statType,
       line: line,
       direction: direction,
       wagerAmount: 100,
@@ -48,7 +66,7 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
     // Show confirmation alert
     Alert.alert(
       'Lineup Created',
-      `Added ${player.name} ${direction === 'up' ? 'over' : 'under'} ${line} PTS to your lineups`,
+      `Added ${player.name} ${direction === 'up' ? 'over' : 'under'} ${line} ${statType} to your lineups`,
       [{ text: 'OK', onPress: onClose }]
     );
   };
@@ -60,8 +78,28 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
           {/* Header */}
           <View className="mb-6 flex-row items-center justify-between">
             <Text className="text-2xl font-bold">Stat</Text>
-            <TouchableOpacity onPress={onClose}>
-              <Text className="text-lg">Points ▼</Text>
+            <TouchableOpacity
+              onPress={() => setShowStatDropdown(!showStatDropdown)}
+              className="relative">
+              <Text className="text-lg">{STAT_DISPLAY_NAMES[statType]} ▼</Text>
+
+              {/* Stat Type Dropdown */}
+              {showStatDropdown && (
+                <View className="absolute right-0 top-8 w-36 rounded-lg bg-white shadow-lg">
+                  {Object.entries(STAT_DISPLAY_NAMES).map(([key, name]) => (
+                    <TouchableOpacity
+                      key={key}
+                      onPress={() => handleStatSelect(key as StatCategory)}
+                      className={`px-4 py-3 ${
+                        key === statType ? 'bg-blue-50' : ''
+                      } border-b border-gray-100`}>
+                      <Text className={`${key === statType ? 'font-medium text-blue-500' : ''}`}>
+                        {name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -115,7 +153,7 @@ const CustomWager: React.FC<CustomWagerProps> = ({ isVisible, onClose, player })
 
             <View className="items-center px-4">
               <Text className="text-3xl font-bold">{line}</Text>
-              <Text className="text-gray-500">PTS</Text>
+              <Text className="text-gray-500">{statType}</Text>
             </View>
 
             <TouchableOpacity className="items-center" onPress={() => adjustLine('up')}>
