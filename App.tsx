@@ -6,6 +6,7 @@ import CreateScreen from './components/CreatePage';
 import BottomTabBar from './components/NavigateBar';
 import Header from './components/Header';
 import MyLineups from './components/MyLineups';
+import Trade from './components/Trade';
 import { LineupProvider } from './context/LineupContext';
 import './global.css';
 
@@ -18,6 +19,8 @@ export default function App() {
         return <CreateScreen />;
       case 'lineup':
         return <MyLineups />;
+      case 'trade':
+        return <Trade />;
       default:
         return (
           <View>

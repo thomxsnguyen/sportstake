@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useLineups } from '../context/LineupContext';
+import { useLineups, StatCategory, STAT_DISPLAY_NAMES } from '../context/LineupContext';
 
 interface Lineup {
   id: string;
@@ -11,7 +11,7 @@ interface Lineup {
   teamName: string;
   jerseyColor: string;
   numberColor: string;
-  type: 'PTS' | 'TO' | 'RBS';
+  type: StatCategory;
   line: number;
   direction: 'up' | 'down';
   wagerAmount: number;
