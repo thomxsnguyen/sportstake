@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLineups } from '../context/LineupContext';
@@ -87,7 +87,12 @@ const renderLineupCard = (lineup: Lineup) => (
   </View>
 );
 
-const GameBox = ({ lineups, totalPotentialWin, wagerAmount }: GameGroup) => {
+const GameBox = ({
+  lineups,
+  totalPotentialWin,
+  wagerAmount,
+  onSell,
+}: GameGroup & { onSell: () => void }) => {
   // Split lineups into rows of 2
   const rows = lineups.reduce<Lineup[][]>((acc, lineup, index) => {
     const rowIndex = Math.floor(index / 2);
@@ -97,6 +102,27 @@ const GameBox = ({ lineups, totalPotentialWin, wagerAmount }: GameGroup) => {
     acc[rowIndex].push(lineup);
     return acc;
   }, []);
+
+  const handleSell = () => {
+    Alert.alert(
+      'Confirm Sale',
+      `Are you sure you want to sell these lineups for $${totalPotentialWin}?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Sell',
+          style: 'default',
+          onPress: () => {
+            onSell();
+            Alert.alert('Success', 'Your lineups have been sold!');
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View className="mb-4 flex-row">
@@ -125,6 +151,7 @@ const GameBox = ({ lineups, totalPotentialWin, wagerAmount }: GameGroup) => {
       {/* List button */}
       <View className="ml-2 self-center">
         <TouchableOpacity
+          onPress={handleSell}
           className="rounded-lg bg-black px-3 py-1.5 shadow-lg"
           style={{
             elevation: 3,
@@ -148,7 +175,7 @@ const GameBox = ({ lineups, totalPotentialWin, wagerAmount }: GameGroup) => {
 
 const CurrentLineups = () => {
   const insets = useSafeAreaInsets();
-  const { lineups } = useLineups();
+  const { lineups, removeLineupsByGame } = useLineups();
 
   // Group lineups by specific game matchup
   const groupedLineups = lineups.reduce<Record<string, GameGroup>>((groups, lineup) => {
@@ -175,16 +202,26 @@ const CurrentLineups = () => {
   // Convert grouped lineups to array
   const gameGroups = Object.values(groupedLineups);
 
+  const handleSellGame = (gameId: string) => {
+    removeLineupsByGame(gameId);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Text className="mb-4 px-6 text-2xl font-bold">Active Lineups</Text>
-      <ScrollView
-        showsVerticalScrollIndicator={true}
-        contentContainerStyle={{ paddingHorizontal: 16 }}>
-        {gameGroups.map((group) => (
-          <GameBox key={group.gameId} {...group} />
-        ))}
-      </ScrollView>
+      {gameGroups.length === 0 ? (
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-lg text-gray-500">You have no active lineups</Text>
+        </View>
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={{ paddingHorizontal: 16 }}>
+          {gameGroups.map((group) => (
+            <GameBox key={group.gameId} {...group} onSell={() => handleSellGame(group.gameId)} />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };

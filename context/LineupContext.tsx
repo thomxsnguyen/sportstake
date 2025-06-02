@@ -20,6 +20,7 @@ interface Lineup {
 interface LineupContextType {
   lineups: Lineup[];
   addLineup: (lineup: Omit<Lineup, 'id' | 'currentValue'>) => void;
+  removeLineupsByGame: (gameId: string) => void;
 }
 
 const LineupContext = createContext<LineupContextType | undefined>(undefined);
@@ -32,7 +33,7 @@ export const useLineups = () => {
   return context;
 };
 
-export const LineupProvider = ({ children }: { children: ReactNode }) => {
+export const LineupProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lineups, setLineups] = useState<Lineup[]>([]);
 
   const addLineup = (newLineup: Omit<Lineup, 'id' | 'currentValue'>) => {
@@ -44,5 +45,19 @@ export const LineupProvider = ({ children }: { children: ReactNode }) => {
     setLineups((prev) => [...prev, lineup]);
   };
 
-  return <LineupContext.Provider value={{ lineups, addLineup }}>{children}</LineupContext.Provider>;
+  const removeLineupsByGame = (gameId: string) => {
+    setLineups((prev) => {
+      return prev.filter((lineup) => {
+        const [team1, team2] = [lineup.teamName, lineup.opponent].sort();
+        const currentGameId = `${team1}_${team2}`;
+        return currentGameId !== gameId;
+      });
+    });
+  };
+
+  return (
+    <LineupContext.Provider value={{ lineups, addLineup, removeLineupsByGame }}>
+      {children}
+    </LineupContext.Provider>
+  );
 };
